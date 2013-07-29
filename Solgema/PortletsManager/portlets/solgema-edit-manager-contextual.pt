@@ -1,4 +1,4 @@
-<div class="portlets-manager" 
+<div class="portlets-manager"
      tal:attributes="id string:portletmanager-${view/normalized_manager_name};"
      i18n:domain="plone">
 
@@ -12,7 +12,7 @@
     </h4>
 
     <form method="post" tal:attributes="action view/blacklist_status_action">
-
+      <span tal:replace="structure context/@@authenticator/authenticator" />
       <input type="hidden" name="manager" tal:attributes="value view/manager_name" />
 
       <div tal:define="status view/context_blacklist_status">
@@ -20,7 +20,7 @@
         <span tal:omit-tag=""
               i18n:translate="label_portlets_parent_folders">
             Parent portlets:
-        </span> 
+        </span>
 
         <select name="context_status:int" size="1">
 
