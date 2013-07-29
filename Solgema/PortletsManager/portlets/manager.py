@@ -1,4 +1,5 @@
 import sys
+import logging
 from Acquisition import Explicit, aq_parent, aq_inner
 from zope.component import adapts, getMultiAdapter, queryMultiAdapter, getUtility
 from zope.interface import implements, Interface
@@ -31,6 +32,8 @@ from plone.app.portlets.interfaces import IDashboard
 
 from Solgema.PortletsManager.interfaces import ISolgemaPortletsManagerLayer, ISolgemaPortletAssignment
 from Solgema.PortletsManager.interfaces import ISolgemaPortletManagerRetriever
+
+LOG = logging.getLogger('Solgema.PortletsManager')
 
 class SolgemaColumnPortletManagerRenderer(ColumnPortletManagerRenderer):
 #    implements(IPortletManagerRenderer)
@@ -103,10 +106,11 @@ class SolgemaPortletManagerRetriever(object):
                     categories.append((category, key, a,))
 
         managerUtility = getUtility(IPortletManager, manager, portal)
-        if not hasattr(managerUtility, 'listAllManagedPortlets'):
+        
+        if not getattr(managerUtility, 'listAllManagedPortlets', []):
             managerUtility.listAllManagedPortlets = []
 
-        hashlist = managerUtility.listAllManagedPortlets
+        hashlist = getattr(managerUtility, 'listAllManagedPortlets', [])
         assignments = []
         for category, key, assignment in categories:
             portletHash = hashPortletInfo(dict(manager=manager, category=category, key=key, name =assignment.__name__,))

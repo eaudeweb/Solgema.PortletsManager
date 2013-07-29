@@ -6,8 +6,6 @@
       i18n:domain="plone">
 <head>
     <div metal:fill-slot="javascript_head_slot" tal:omit-tag="">
-        <link type="text/css" rel="kinetic-stylesheet"
-            tal:attributes="href string:${context/absolute_url}/++resource++solgema-portlets-manager.kss"/>
         <script type="text/javascript"
             tal:attributes="src string:${context/absolute_url}/spmdragdropreorder.js"></script>
     </div>
@@ -73,7 +71,7 @@
           <div class="portletHeader"></div>
           <span i18n:translate="portlet_not_displayed">Portlet inherited but not displayed</span>
         </div>
-  <ul style="clear:both;">
+  <ul style="clear:both;" i18n:domain="Solgema.PortletsManager">
     <li id="move_up" style="display:list-item;"><span i18n:translate="move_up">move portlet up</span>: &uarr;</li>
     <li id="move_down" style="display:list-item;"><span i18n:translate="move_down">move portlet down</span>: &darr;</li>
     <li id="move_up_down" style="display:none;"><span i18n:translate="move_up_down">move portlet up or down</span>: ::</li>
@@ -83,11 +81,84 @@
     <li><span i18n:translate="move_right">move portlet right</span>: &rarr;</li>
     <li><span i18n:translate="delete">delete portlet</span>: &times;</li>
   </ul>
-  <script type="text/javascript">
-    jq('#move_up').css("display", "none" );
-    jq('#move_down').css("display", "none" );
-    jq('#move_up_down').css("display", "list-item" );
-  </script>
+
+      <script type="text/javascript">
+          function initPortletManager(manager) {
+          jq(manager).find('.sortable').sortable({
+              revert: true,
+              connectWith: '.sortable',
+              cancel: 'a.delete, a.stop, a.allow',
+              stop: function(event, ui) {
+                  jq('#kss-spinner').show();
+                  var manager = jq(ui.item).parents('.portlets-manager');
+                  var items = [];
+                  jq(manager).find('li').each( function(i, elem) {
+                      items.push(jq(elem).children().attr('id'));
+                  });
+                  var pos = jq.inArray(jq(ui.item).children().attr('id'), items);
+                  var url = jq(ui.item).find('a.delete').attr('href').replace('spm-delete-portlet', 'spm_move_portlet_delta')+'&position:int='+pos+'&manager='+jq(manager).attr('id');
+                  jq.ajax({
+                    type: "POST",
+                    url: url,
+                    success: function(msg) {
+                        jq('#kss-spinner').hide();
+                    }
+                  });
+              }
+          });
+          jq(manager).find('a.allow').click(function(event){
+              event.preventDefault();
+              var parent = jq(this).parents('li');
+              jq('#kss-spinner').show();
+              jq.ajax({
+                type: "POST",
+                url: jq(this).attr('href')+'&ajax=1',
+                success: function(msg) {
+                    jq(parent).find('a.allow').hide();
+                    jq(parent).find('a.stop').show();
+                    jq('#kss-spinner').hide();
+                }
+              });
+          });
+          jq(manager).find('a.stop').click(function(event){
+              event.preventDefault();
+              var parent = jq(this).parents('li');
+              jq('#kss-spinner').show();
+              jq.ajax({
+                type: "POST",
+                url: jq(this).attr('href')+'&ajax=1',
+                success: function(msg) {
+                    jq(parent).find('a.allow').show();
+                    jq(parent).find('a.stop').hide();
+                    jq('#kss-spinner').hide();
+                }
+              });
+          });
+          jq(manager).find('a.delete').click(function(event){
+              event.preventDefault();
+              if(confirm('Delete portlet?')) {
+                  var parent = jq(this).parents('li');
+                  jq('#kss-spinner').show();
+                  jq.ajax({
+                    type: "POST",
+                    url: jq(this).attr('href')+'&ajax=1',
+                    success: function(msg) {
+                        jq(parent).remove();
+                        jq('#kss-spinner').hide();
+                    }
+                  });
+              }
+          });
+          };
+          jq(function(){
+              jq('.portletHeader span.draggable').hide();
+              jq('.portletHeader a.right').hide();
+              jq('.portletHeader a.left').hide();
+              jq('.sortable').each(function(i,elem){
+                  initPortletManager(jq(elem).parent());
+              });
+          });
+      </script>
   </div>
   <p i18n:translate="description_portlets_block_unblock">
       If you wish to block or unblock certain categories of portlets, you can 

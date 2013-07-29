@@ -2,9 +2,6 @@ from zope.interface import implements
 from zope.component import getUtility, getAdapters, getMultiAdapter
 from Acquisition import aq_parent, aq_inner
 
-from plone.app.kss.interfaces import IPloneKSSView
-from plone.app.kss.plonekssview import PloneKSSView as basePloneKSSView
-
 from plone.portlets.interfaces import IPortletManager
 from plone.portlets.interfaces import IPortletManagerRenderer
 from plone.portlets.interfaces import IPortletAssignmentMapping
@@ -20,13 +17,17 @@ from plone.portlets.constants import GROUP_CATEGORY
 from plone.portlets.constants import CONTENT_TYPE_CATEGORY
 from plone.portlets.constants import CONTEXT_CATEGORY
 
-class PortletManagerKSS(basePloneKSSView):
+from Products.Five.browser import BrowserView
+
+class PortletManagerView(BrowserView):
     """Opertions on portlets done using KSS
     """
-    implements(IPloneKSSView)
 
-    def spm_move_portlet_delta(self, portlethash, viewname, delta):
-        portal_state = getMultiAdapter((self.context, self.context.REQUEST), name=u'plone_portal_state')
+    def spm_move_portlet_delta(self):
+        portlethash = self.request.get('portlethash')
+        portlethash = self.request.get('viewname')
+        portlethash = self.request.get('delta')
+        portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
         info = unhashPortletInfo(portlethash)
         manager = getUtility(IPortletManager, name=info['manager'], context=portal)
@@ -43,14 +44,16 @@ class PortletManagerKSS(basePloneKSSView):
         self._render_column(info, viewname)
         return 'done'
 
-    def spm_move_portlet_up(self, portlethash, viewname):
+    def spm_move_portlet_up(self):
+        portlethash = self.request.get('portlethash')
+        portlethash = self.request.get('viewname')
         info = unhashPortletInfo(portlethash)
         assignments = assignment_mapping_from_key(self.context, 
                         info['manager'], info['category'], info['key'])
         
         IPortletPermissionChecker(assignments.__of__(aq_inner(self.context)))()
         
-        portal_state = getMultiAdapter((self.context, self.context.REQUEST), name=u'plone_portal_state')
+        portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 #        manager = getUtility(IPortletManager, name=info['manager'], context=portal)
         manager = getUtility(IPortletManager, name=info['manager'])
@@ -69,13 +72,15 @@ class PortletManagerKSS(basePloneKSSView):
         return self._render_column(info, viewname)
         
         
-    def spm_move_portlet_down(self, portlethash, viewname):
+    def spm_move_portlet_down(self):
+        portlethash = self.request.get('portlethash')
+        portlethash = self.request.get('viewname')
         info = unhashPortletInfo(portlethash)
         assignments = assignment_mapping_from_key(self.context, 
                         info['manager'], info['category'], info['key'])
         IPortletPermissionChecker(assignments.__of__(aq_inner(self.context)))()
         
-        portal_state = getMultiAdapter((self.context, self.context.REQUEST), name=u'plone_portal_state')
+        portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 #        manager = getUtility(IPortletManager, name=info['manager'], context=portal)
         manager = getUtility(IPortletManager, name=info['manager'])
@@ -93,13 +98,15 @@ class PortletManagerKSS(basePloneKSSView):
 
         return self._render_column(info, viewname)
         
-    def spm_delete_portlet(self, portlethash, viewname):
+    def spm_delete_portlet(self):
+        portlethash = self.request.get('portlethash')
+        portlethash = self.request.get('viewname')
         info = unhashPortletInfo(portlethash)
         assignments = assignment_mapping_from_key(self.context, 
                         info['manager'], info['category'], info['key'])
                         
         IPortletPermissionChecker(assignments.__of__(aq_inner(self.context)))()
-        portal_state = getMultiAdapter((self.context, self.context.REQUEST), name=u'plone_portal_state')
+        portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
         manager = getUtility(IPortletManager, name=info['manager'], context=portal)
         listhashes = manager.listAllManagedPortlets
@@ -108,7 +115,10 @@ class PortletManagerKSS(basePloneKSSView):
         manager.listAllManagedPortlets = listhashes
         return self._render_column(info, viewname)
 
-    def spm_stop_portlet(self, portlethash, viewname, hereurl):
+    def spm_stop_portlet(self):
+        portlethash = self.request.get('portlethash')
+        portlethash = self.request.get('viewname')
+        portlethash = self.request.get('hereurl')
         info = unhashPortletInfo(portlethash)
         assignments = assignment_mapping_from_key(self.context, 
                         info['manager'], info['category'], info['key'])
@@ -132,7 +142,10 @@ class PortletManagerKSS(basePloneKSSView):
             assigned.stopUrls = [hereurl]
         return self._render_column(info, viewname)
 
-    def spm_allow_portlet(self, portlethash, viewname, hereurl):
+    def spm_allow_portlet(self):
+        portlethash = self.request.get('portlethash')
+        portlethash = self.request.get('viewname')
+        portlethash = self.request.get('hereurl')
         info = unhashPortletInfo(portlethash)
         assignments = assignment_mapping_from_key(self.context, 
                         info['manager'], info['category'], info['key'])
@@ -148,8 +161,10 @@ class PortletManagerKSS(basePloneKSSView):
         assigned.stopUrls = li
         return self._render_column(info, viewname)
 
-    def spm_right_portlet(self, portlethash, viewname):
-        portal_state = getMultiAdapter((self.context, self.context.REQUEST), name=u'plone_portal_state')
+    def spm_right_portlet(self):
+        portlethash = self.request.get('portlethash')
+        portlethash = self.request.get('viewname')
+        portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
         info = unhashPortletInfo(portlethash)
 
@@ -175,8 +190,10 @@ class PortletManagerKSS(basePloneKSSView):
         del assignments[info['name']]
         return self._render_both_column(info, viewname)
 
-    def spm_left_portlet(self, portlethash, viewname):
-        portal_state = getMultiAdapter((self.context, self.context.REQUEST), name=u'plone_portal_state')
+    def spm_left_portlet(self):
+        portlethash = self.request.get('portlethash')
+        portlethash = self.request.get('viewname')
+        portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
         info = unhashPortletInfo(portlethash)
 
@@ -241,3 +258,4 @@ class PortletManagerKSS(basePloneKSSView):
         rendererB.update()
         ksscore.replaceInnerHTML(selectorB, rendererB.__of__(context).render())
         return self.render()
+
