@@ -3,7 +3,7 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="plone">
+      i18n:domain="eea">
 <head>
     <div metal:fill-slot="javascript_head_slot" tal:omit-tag="">
         <script type="text/javascript"
@@ -50,11 +50,11 @@
 
   <p i18n:translate="description_manage_contextual_portlets">
     The portlet columns will now display only those portlets
-    explicitly assigned in this context. Use the buttons on each portlet 
+    explicitly assigned in this context. Use the buttons on each portlet
     to move them up or down, delete or edit them. To add a new portlet,
     use the drop-down list at the top of the column.
   </p>
-  <div class="portletAssignments portletLegend" i18n:domain="Solgema.PortletsManager">
+  <div class="portletAssignments portletLegend" i18n:domain="eea">
         <div class="portletLegendLine herited portlet_here portlet_visible">
           <div class="portletHeader"></div>
         </div>
@@ -71,7 +71,7 @@
           <div class="portletHeader"></div>
           <span i18n:translate="portlet_not_displayed">Portlet inherited but not displayed</span>
         </div>
-  <ul style="clear:both;" i18n:domain="Solgema.PortletsManager">
+  <ul style="clear:both;" i18n:domain="eea">
     <li id="move_up" style="display:list-item;"><span i18n:translate="move_up">move portlet up</span>: &uarr;</li>
     <li id="move_down" style="display:list-item;"><span i18n:translate="move_down">move portlet down</span>: &darr;</li>
     <li id="move_up_down" style="display:none;"><span i18n:translate="move_up_down">move portlet up or down</span>: ::</li>
@@ -136,7 +136,7 @@
           });
           jq(manager).find('a.delete').click(function(event){
               event.preventDefault();
-              if(confirm('Delete portlet?')) {
+              if(confirm('THIS ACTION WILL DELETE THE PORTLET FROM ALL SECTIONS OF THE PORTAL! \n Hint 1: ask a portal manager if you want to manage portlets \n Hint 2: use Parent portlets property and select Block')) {
                   var parent = jq(this).parents('li');
                   jq('#kss-spinner').show();
                   jq.ajax({
@@ -161,7 +161,7 @@
       </script>
   </div>
   <p i18n:translate="description_portlets_block_unblock">
-      If you wish to block or unblock certain categories of portlets, you can 
+      If you wish to block or unblock certain categories of portlets, you can
       do so using the drop-down boxes.
   </p>
 
@@ -182,7 +182,7 @@
                value="Convert portlets"
                i18n:attributes="value label_convert_portlets"
                name="convert" />
-    
+
     </form>
 
   </div>
