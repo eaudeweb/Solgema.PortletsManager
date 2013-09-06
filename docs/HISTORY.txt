@@ -2,6 +2,9 @@ Changelog
 =========
 
 
+0.8.eea.1-dev - (unreleased)
+----------------------------
+
 0.8.eea - (2013-09-06)
 ----------------------
 * Fix: adding authenticator code to form submit
