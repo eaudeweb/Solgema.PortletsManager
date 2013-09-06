@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-0.8eea-dev - (2013-06-20)
+0.8eea-dev - (unreleased)
 -------------------------
 * Fix: adding authenticator code to form submit
   [hman]
