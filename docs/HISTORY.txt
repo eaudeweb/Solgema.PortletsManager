@@ -1,36 +1,53 @@
-Changelog for Solgema.PortletsManager
+=========
+Changelog
+=========
 
-    (name of developer listed in brackets)
+0.8.eea.1-dev - (unreleased)
+----------------------------
+* Fix: Disabled SolgemaColumnPortletManagerRenderer since it hides the manage
+  form for content types portlet
+  [ichimdav refs #16720]
 
-Solgema.PortletsManager - 0.9 Unreleased
-    
-    - Disabled SolgemaColumnPortletManagerRenderer since it hides the manage
-      form for content types portlet
-      [ichimdav refs #16720]
+0.8.eea - (2013-09-06)
+----------------------
+* Fix: adding authenticator code to form submit
+  [hman]
+* Change: reverting to 0.7 css (fits better with the EEA style)
+  [hman]
+* Change: i18n domain is now "eea"
+  [hman]
 
-Solgema.PortletsManager - 0.1 Unreleased
+0.8 - (2013-06-20)
+------------------
+* Plone 4.3 compatibility (removed kss dependency)
 
-    - Initial package structure.
-      [zopeskel]
+0.7 - (2011-10-07)
+------------------
+* Release 0.7
 
-Solgema.PortletsManager - 0.5.1b1 Released
+0.5.5 - (0000-00-00)
+--------------------
+* Moved portlet manager renderer from portlets/configure.zcml to overrides.zcml (group, types and users portlet weren't editable)
+  Unfortunately it's not possible to customize the portlet renderer because it is already overriden in plone.app.portlets
 
-    - First public release.
+0.5.1b2 - (0000-00-00)
+----------------------
+* Solgema.PortletsManager.interfaces
+  ISolgemaPortletsManagerLayer class based on IDefaultPloneLayer and not Interface.
+  (allows to have the product running with other plone skins than the default one.)
+* css changes
+* manage-portlets view template changed
+* i18n updated
+* migrations added and registered
+* javascript to allow drop down of the portlets
+* replaced characters that weren't displayed on IE
 
-Solgema.PortletsManager - 0.5.1b2 Released
+0.5.1b1 - (0000-00-00)
+----------------------
+* First public release.
 
-    - Solgema.PortletsManager.interfaces
-      ISolgemaPortletsManagerLayer class based on IDefaultPloneLayer and not Interface.
-      (allows to have the product running with other plone skins than the default one.)
-    - css changes
-    - manage-portlets view template changed
-    - i18n updated
-    - migrations added and registered
-    - javascript to allow drop down of the portlets
-    - replaced characters that weren't displayed on IE
-
-Solgema.PortletsManager - 0.5.5 Released
-
-    - Moved portlet manager renderer from portlets/configure.zcml to overrides.zcml (group, types and users portlet weren't editable)
-      Unfortunately it's not possible to customize the portlet renderer because it is already overriden in plone.app.portlets
-
+0.1 - (0000-00-00)
+------------------
+* Initial package structure.
+  [zopeskel]
+>>>>>>> a7cd8c2b4242ab8ab1288452c4d9136b5fc9b3c7

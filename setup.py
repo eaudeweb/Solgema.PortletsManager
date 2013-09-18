@@ -1,10 +1,15 @@
 from setuptools import setup, find_packages
 import os
+from os.path import join
 
-version = '0.8'
 
-setup(name='Solgema.PortletsManager',
-      version=version,
+NAME = 'Solgema.PortletsManager'
+PATH = NAME.split('.') + ['version.txt']
+VERSION = open(join(*PATH)).read().strip()
+
+
+setup(name=NAME,
+      version=VERSION,
       description="Solgema Portlets Manager",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
