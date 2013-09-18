@@ -2,6 +2,12 @@ Changelog for Solgema.PortletsManager
 
     (name of developer listed in brackets)
 
+Solgema.PortletsManager - 0.9 Unreleased
+    
+    - Disabled SolgemaColumnPortletManagerRenderer since it hides the manage
+      form for content types portlet
+      [ichimdav refs #16720]
+
 Solgema.PortletsManager - 0.1 Unreleased
 
     - Initial package structure.

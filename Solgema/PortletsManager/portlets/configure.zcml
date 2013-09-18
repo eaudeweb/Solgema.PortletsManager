@@ -22,6 +22,7 @@
      provides="plone.portlets.interfaces.IPortletManagerRenderer"
      />
 
+
   <browser:page
      for="*"
      name="herited-portlets-macros"
@@ -36,12 +37,12 @@
      class="Solgema.PortletsManager.portlets.editmanager.ManagePortletAssignments"
      permission="plone.app.portlets.ManageOwnPortlets"
      >
-      
+
       <browser:page
         name="spm-delete-portlet"
         attribute="spm_delete_portlet"
         />
-      
+
       <browser:page
         name="spm-allow-portlet"
         attribute="spm_allow_portlet"
@@ -56,12 +57,12 @@
         name="spm-move-portlet-up"
         attribute="spm_move_portlet_up"
         />
-      
+
       <browser:page
         name="spm-move-portlet-down"
         attribute="spm_move_portlet_down"
         />
-      
+
       <browser:page
         name="spm_move_portlet_delta"
         attribute="spm_move_portlet_delta"
@@ -76,7 +77,7 @@
         name="spm-right-portlet"
         attribute="spm_right_portlet"
         />
-        
+
   </browser:pages>
 
   <browser:pages
@@ -137,11 +138,14 @@
      layer="Solgema.PortletsManager.interfaces.ISolgemaPortletsManagerLayer"
      />
 
-  <adapter factory=".manager.SolgemaColumnPortletManagerRenderer"
-     for="zope.interface.Interface
-          Solgema.PortletsManager.interfaces.ISolgemaPortletsManagerLayer
-          zope.publisher.interfaces.browser.IBrowserView
-          plone.portlets.interfaces.IPortletManager"
-     provides="plone.portlets.interfaces.IPortletManagerRenderer"/>
+    <!-- #16720 disabled ColumnPortletManager since the content type portlets
+         do not show up when enabled -->
+
+  <!--<adapter factory=".manager.SolgemaColumnPortletManagerRenderer"-->
+     <!--for="zope.interface.Interface-->
+          <!--Solgema.PortletsManager.interfaces.ISolgemaPortletsManagerLayer-->
+          <!--zope.publisher.interfaces.browser.IBrowserView-->
+          <!--plone.portlets.interfaces.IPortletManager"-->
+     <!--provides="plone.portlets.interfaces.IPortletManagerRenderer"/>-->
 
 </configure>
