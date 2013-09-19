@@ -4,6 +4,9 @@ Changelog
 
 0.8.eea.1-dev - (unreleased)
 ----------------------------
+* Fix: fixed issue where the parent portlet gave a list error while attempting
+  to move it above or below a portlet from the given context
+  [ichimdav refs #16720]
 * Fix: Disabled SolgemaColumnPortletManagerRenderer since it hides the manage
   form for content types portlet
   [ichimdav refs #16720]

@@ -19,6 +19,9 @@ class ManagePortletAssignments(newManagePortletAssignments):
     """Utility views for managing portlets for a particular column
     """
 
+    def __init__(self, context, request):
+        super(ManagePortletAssignments, self).__init__(context, request)
+
     # view @@move-portlet-up
     def spm_move_portlet_up(self, name):
         assignments = aq_inner(self.context)
@@ -32,16 +35,14 @@ class ManagePortletAssignments(newManagePortletAssignments):
         portal = portal_state.portal()
         manager = getUtility(IPortletManager, name=managerid, context=portal)
         listhashes = manager.listAllManagedPortlets
-        retriever = getMultiAdapter((self.context, manager), ISolgemaPortletManagerRetriever)
-        managedPortletsHashes = [a['hash'] for a in retriever.getManagedPortlets()]
 
         if portlethash in listhashes:
-            hashBefore = managedPortletsHashes[managedPortletsHashes.index(portlethash)-1]
+            hashBefore = listhashes.index(portlethash)
             listhashes.remove(portlethash)
-            listhashes.insert(listhashes.index(hashBefore), portlethash)
+            listhashes.insert(hashBefore - 1, portlethash)
             manager.listAllManagedPortlets = listhashes
         else:
-            manager.listAllManagedPortlets = listhashes.insert(0,portlethash)
+            manager.listAllManagedPortlets = listhashes.insert(0, portlethash)
         
         self.request.response.redirect(self._nextUrl())
         return 'OK'
@@ -60,13 +61,11 @@ class ManagePortletAssignments(newManagePortletAssignments):
         portal = portal_state.portal()
         manager = getUtility(IPortletManager, name=managerid, context=portal)
         listhashes = manager.listAllManagedPortlets
-        retriever = getMultiAdapter((self.context, manager), ISolgemaPortletManagerRetriever)
-        managedPortletsHashes = [a['hash'] for a in retriever.getManagedPortlets()]
 
         if portlethash in listhashes:
-            hashAfter = managedPortletsHashes[managedPortletsHashes.index(portlethash)+1]
+            hashAfter = listhashes.index(portlethash)
             listhashes.remove(portlethash)
-            listhashes.insert(listhashes.index(hashAfter)+1, portlethash)
+            listhashes.insert(hashAfter + 1, portlethash)
             manager.listAllManagedPortlets = listhashes
         else:
             manager.listAllManagedPortlets = listhashes.append(portlethash)
