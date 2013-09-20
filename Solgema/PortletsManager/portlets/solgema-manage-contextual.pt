@@ -151,7 +151,6 @@
           });
           };
           jq(function(){
-              jq('.portletHeader span.draggable').hide();
               jq('.portletHeader a.right').hide();
               jq('.portletHeader a.left').hide();
               jq('.sortable').each(function(i,elem){

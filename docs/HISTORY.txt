@@ -4,6 +4,8 @@ Changelog
 
 0.8.eea.1-dev - (unreleased)
 ----------------------------
+* Fix: Display  draggable actions within manage-portlets
+  [ichimdav refs #16720]
 * Fix: fixed issue where the parent portlet gave a list error while attempting
   to move it above or below a portlet from the given context
   [ichimdav refs #16720]
