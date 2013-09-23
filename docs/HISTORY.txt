@@ -2,7 +2,7 @@
 Changelog
 =========
 
-0.8.eea.1 - (23-09-2013)
+0.8.eea.2 - (23-09-2013)
 ----------------------------
 * Fix: Display  draggable actions within manage-portlets
   [ichimdav refs #16720]
