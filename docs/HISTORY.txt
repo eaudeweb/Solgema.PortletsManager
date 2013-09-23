@@ -55,4 +55,3 @@ Changelog
 ------------------
 * Initial package structure.
   [zopeskel]
->>>>>>> a7cd8c2b4242ab8ab1288452c4d9136b5fc9b3c7
