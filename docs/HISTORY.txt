@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.9-dev - (unreleased)
+9.0.dev0 - (unreleased)
 ----------------------
 * Feature: back to standard version numbering
   [alecghica refs #70945]
