@@ -1,11 +1,11 @@
 Changelog
 =========
 
-9.0.dev0 - (unreleased)
-----------------------
+9.0 - (2016-04-12)
+------------------
 * Feature: back to standard version numbering
   [alecghica refs #70945]
-  
+
 0.8.3 - (12-04-2016)
 --------------------
 * Feature: back to standard version numbering
@@ -64,3 +64,4 @@ Changelog
 ------------------
 * Initial package structure.
   [zopeskel]
+

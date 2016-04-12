@@ -2,3 +2,5 @@ recursive-include Solgema *
 recursive-include docs *
 global-exclude *pyc
 include *.txt
+
+global-include *.mo
