@@ -3,21 +3,23 @@ Changelog
 
 0.9-dev - (unreleased)
 ----------------------
+* Feature: back to standard version numbering
+  [alecghica refs #70945]
 
 0.8.eea.2 - (23-09-2013)
 ----------------------------
-* Fix: Display  draggable actions within manage-portlets
+* Bug fix: Display  draggable actions within manage-portlets
   [ichimdav refs #16720]
-* Fix: fixed issue where the parent portlet gave a list error while attempting
+* Bug fix: fixed issue where the parent portlet gave a list error while attempting
   to move it above or below a portlet from the given context
   [ichimdav refs #16720]
-* Fix: Disabled SolgemaColumnPortletManagerRenderer since it hides the manage
+* Bug fix: Disabled SolgemaColumnPortletManagerRenderer since it hides the manage
   form for content types portlet
   [ichimdav refs #16720]
 
 0.8.eea - (2013-09-06)
 ----------------------
-* Fix: adding authenticator code to form submit
+* Bug fix: adding authenticator code to form submit
   [hman]
 * Change: reverting to 0.7 css (fits better with the EEA style)
   [hman]
