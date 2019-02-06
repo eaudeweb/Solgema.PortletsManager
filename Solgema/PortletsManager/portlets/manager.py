@@ -203,7 +203,16 @@ class ContextualEditPortletManagerRenderer(baseContextualEditPortletManagerRende
         return [a['hash'] for a in self.all_visible_portlets()]
 
     def context_baseUrl(self, rportlet_key, rportlet_category):
-        return '%s/++%sportlets++%s' % (rportlet_key, rportlet_category, self.manager.__name__)
+        if rportlet_category != CONTEXT_CATEGORY:
+            portal_state = getMultiAdapter((self.context, self.request),
+                                           name=u'plone_portal_state')
+            portal = portal_state.portal()
+            portal_url = portal.absolute_url()
+            return '%s/++contenttypeportlets++%s+%s' % (portal_url,
+                                         self.manager.__name__, rportlet_key)
+        else:
+            url = self.request.SERVER_URL
+            return '%s%s/++%sportlets++%s' % (url, rportlet_key, rportlet_category, self.manager.__name__)
         
     def all_herited_portlets(self):
         """get herited portlets"""
@@ -216,23 +225,24 @@ class ContextualEditPortletManagerRenderer(baseContextualEditPortletManagerRende
             name = rportlet['assignment'].__name__
             portlet_context = portal.restrictedTraverse(rportlet['key'][1:len(rportlet['key'])], default=None)
             editview = queryMultiAdapter((rportlet['assignment'], self.request), name='edit', default=None)
+            url = self.context_baseUrl(rportlet['key'], rportlet['category'])
             if editview is None or rportlet['category'] != CONTEXT_CATEGORY:
                 editviewName = ''
             else:
-                editviewName = '%s/%s/edit' % (self.context_baseUrl(rportlet['key'], rportlet['category']), name)
+                editviewName = '%s/%s/edit' % (url, name)
             visibility = rportlet['hash'] in self.visible_portlets_hash() and 'portlet_visible' or 'portlet_hidden'
             visibility += rportlet['hash'] in self.context_portlets_hash() and ' portlet_here' or ''
             assignments = assignment_mapping_from_key(self.context, self.manager.__name__, rportlet['category'], rportlet['key'])
             rportlet['title'] = rportlet['assignment'].title
             rportlet['visibility'] = visibility
             rportlet['editview'] = editviewName
-            rportlet['up_url'] = '%s/@@spm-move-portlet-up?name=%s' % (self.context_baseUrl(rportlet['key'], rportlet['category']), name)
-            rportlet['down_url'] = '%s/@@spm-move-portlet-down?name=%s' % (self.context_baseUrl(rportlet['key'], rportlet['category']), name)
-            rportlet['delete_url'] = '%s/@@spm-delete-portlet?name=%s' % (self.context_baseUrl(rportlet['key'], rportlet['category']), name)
-            rportlet['stop_url'] = '%s/@@spm-stop-portlet?name=%s' % (self.context_baseUrl(rportlet['key'], rportlet['category']), name)
-            rportlet['allow_url'] = '%s/@@spm-allow-portlet?name=%s' % (self.context_baseUrl(rportlet['key'], rportlet['category']), name)
-            rportlet['left_url'] = '%s/@@spm-left-portlet?name=%s' % (self.context_baseUrl(rportlet['key'], rportlet['category']), name)
-            rportlet['right_url'] = '%s/@@spm-right-portlet?name=%s' % (self.context_baseUrl(rportlet['key'], rportlet['category']), name)
+            rportlet['up_url'] = '%s/@@spm-move-portlet-up?name=%s' % (url, name)
+            rportlet['down_url'] = '%s/@@spm-move-portlet-down?name=%s' % (url, name)
+            rportlet['delete_url'] = '%s/@@spm-delete-portlet?name=%s' % (url, name)
+            rportlet['stop_url'] = '%s/@@spm-stop-portlet?name=%s' % (url, name)
+            rportlet['allow_url'] = '%s/@@spm-allow-portlet?name=%s' % (url, name)
+            rportlet['left_url'] = '%s/@@spm-left-portlet?name=%s' % (url, name)
+            rportlet['right_url'] = '%s/@@spm-right-portlet?name=%s' % (url, name)
             rportlet['canDelete'] = rportlet['category'] == CONTEXT_CATEGORY and True or False
             rportlet['manager_name'] = self.manager.__name__
         return rportlets

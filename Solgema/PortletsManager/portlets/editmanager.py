@@ -4,6 +4,8 @@ from zope.component import adapts, getMultiAdapter, queryMultiAdapter, getUtilit
 from Acquisition import Explicit, aq_parent, aq_inner
 
 from plone.portlets.constants import CONTEXT_CATEGORY
+from plone.portlets.constants import CONTENT_TYPE_CATEGORY
+
 from plone.portlets.interfaces import IPortletManager
 from plone.portlets.interfaces import IPortletAssignmentMapping
 from plone.portlets.utils import hashPortletInfo
@@ -27,9 +29,17 @@ class ManagePortletAssignments(newManagePortletAssignments):
         assignments = aq_inner(self.context)
         IPortletPermissionChecker(assignments)()
         managerid = assignments.id.split('++')[-1]
+        content_type_portlet = False
+        content_type_key = ""
+        category = CONTEXT_CATEGORY
+        if "+" in managerid:
+            content_type_portlet = True
+            content_type_key = managerid.split('+')[1]
+            managerid = managerid.split('+')[0]
+            category = CONTENT_TYPE_CATEGORY
         parent = aq_parent(aq_inner(self.context))
-        key = '/'.join(parent.getPhysicalPath())
-        portlethash = hashPortletInfo(dict(manager=managerid, category=CONTEXT_CATEGORY, key=key, name=name,))
+        key = '/'.join(parent.getPhysicalPath()) if not content_type_portlet else content_type_key
+        portlethash = hashPortletInfo(dict(manager=managerid, category=category, key=key, name=name,))
 
         portal_state = getMultiAdapter((self.context, self.context.REQUEST), name=u'plone_portal_state')
         portal = portal_state.portal()
@@ -52,10 +62,17 @@ class ManagePortletAssignments(newManagePortletAssignments):
         assignments = aq_inner(self.context)
         IPortletPermissionChecker(assignments)()
         managerid = assignments.id.split('++')[-1]
-
+        content_type_portlet = False
+        content_type_key = ""
+        category = CONTEXT_CATEGORY
+        if "+" in managerid:
+            content_type_portlet = True
+            content_type_key = managerid.split('+')[1]
+            managerid = managerid.split('+')[0]
+            category = CONTENT_TYPE_CATEGORY
         parent = aq_parent(aq_inner(self.context))
-        key = '/'.join(parent.getPhysicalPath())
-        portlethash = hashPortletInfo(dict(manager=managerid, category=CONTEXT_CATEGORY, key=key, name=name,))
+        key = '/'.join(parent.getPhysicalPath()) if not content_type_portlet else content_type_key
+        portlethash = hashPortletInfo(dict(manager=managerid, category=category, key=key, name=name,))
 
         portal_state = getMultiAdapter((self.context, self.context.REQUEST), name=u'plone_portal_state')
         portal = portal_state.portal()
@@ -119,11 +136,18 @@ class ManagePortletAssignments(newManagePortletAssignments):
         assignments = aq_inner(self.context)
         IPortletPermissionChecker(assignments)()
         managerid = assignments.id.split('++')[-1]
-
+        content_type_portlet = False
+        content_type_key = ""
+        category = CONTEXT_CATEGORY
+        if "+" in managerid:
+            content_type_portlet = True
+            content_type_key = managerid.split('+')[1]
+            managerid = managerid.split('+')[0]
+            category = CONTENT_TYPE_CATEGORY
         parent = aq_parent(aq_inner(self.context))
-        key = '/'.join(parent.getPhysicalPath())
-        portlethash = hashPortletInfo(dict(manager=managerid, category=CONTEXT_CATEGORY, key=key, name=name,))
-        
+        key = '/'.join(parent.getPhysicalPath()) if not content_type_portlet else content_type_key
+        portlethash = hashPortletInfo(dict(manager=managerid, category=category, key=key, name=name,))
+
         portal_state = getMultiAdapter((self.context, self.context.REQUEST), name=u'plone_portal_state')
         portal = portal_state.portal()
         manager = getUtility(IPortletManager, name=managerid, context=portal)
