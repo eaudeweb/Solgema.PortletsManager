@@ -1,4 +1,3 @@
-import sys
 import logging
 from Acquisition import Explicit, aq_parent, aq_inner
 from zope.component import adapts, getMultiAdapter, queryMultiAdapter, getUtility
@@ -14,30 +13,24 @@ from plone.portlets.interfaces import ILocalPortletAssignable
 from plone.portlets.interfaces import IPortletManagerRenderer
 from plone.portlets.interfaces import IPortletContext
 from plone.portlets.constants import CONTEXT_ASSIGNMENT_KEY
-from plone.portlets.constants import CONTEXT_BLACKLIST_STATUS_KEY
 from plone.portlets.constants import CONTEXT_CATEGORY, USER_CATEGORY, GROUP_CATEGORY, CONTENT_TYPE_CATEGORY
 from plone.portlets.utils import hashPortletInfo
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from plone.app.portlets.browser.editmanager import ContextualEditPortletManagerRenderer as baseContextualEditPortletManagerRenderer
-from plone.app.portlets.browser.interfaces import IManageColumnPortletsView, IManageContextualPortletsView
-from plone.app.portlets.utils import assignment_mapping_from_key
+from plone.app.portlets.browser.interfaces import IManageContextualPortletsView
 # import actual plone portlet views
 from plone.app.portlets.manager import ColumnPortletManagerRenderer
-from plone.app.portlets.manager import DashboardPortletManagerRenderer
-from plone.app.portlets.browser.editmanager import EditPortletManagerRenderer
 from plone.app.portlets.browser.editmanager import ContextualEditPortletManagerRenderer
-from plone.app.portlets.browser.editmanager import DashboardEditPortletManagerRenderer
 
-from plone.app.portlets.interfaces import IDashboard
 
 from Solgema.PortletsManager.interfaces import ISolgemaPortletsManagerLayer, ISolgemaPortletAssignment
 from Solgema.PortletsManager.interfaces import ISolgemaPortletManagerRetriever
 
 LOG = logging.getLogger('Solgema.PortletsManager')
 
+
 class SolgemaColumnPortletManagerRenderer(ColumnPortletManagerRenderer):
-#    implements(IPortletManagerRenderer)
-#    adapts(Interface, ISolgemaPortletsManagerLayer, IBrowserView, IColumn)
+    implements(IPortletManagerRenderer)
+    adapts(Interface, ISolgemaPortletsManagerLayer, IBrowserView, IColumn)
     template = ViewPageTemplateFile('column.pt')
 
     def base_url(self):
@@ -71,7 +64,7 @@ class SolgemaPortletManagerRetriever(object):
         if pcontext is None:
             return []
 
-        categories = [] 
+        categories = []
 
         blacklisted = {}
 
@@ -91,14 +84,14 @@ class SolgemaPortletManagerRetriever(object):
                     localManager = local.get(manager, None)
                     if localManager is not None:
                         categories.extend([(CONTEXT_CATEGORY, currentpc.uid, a) for a in localManager.values()])
-                    
+
             # Check the parent - if there is no parent, we will stop
             current = currentpc.getParent()
             if current is not None:
                 currentpc = IPortletContext(current, None)
-        
+
         # Get all global mappings for non-blacklisted categories
-        
+
         for category, key in pcontext.globalPortletCategories(False):
             mapping = self.storage.get(category, None)
             if mapping is not None:
@@ -106,7 +99,7 @@ class SolgemaPortletManagerRetriever(object):
                     categories.append((category, key, a,))
 
         managerUtility = getUtility(IPortletManager, manager, portal)
-        
+
         if not getattr(managerUtility, 'listAllManagedPortlets', []):
             managerUtility.listAllManagedPortlets = []
 
@@ -143,13 +136,13 @@ class SolgemaPortletManagerRetriever(object):
 
         return assignments
 
+
 class ContextualEditPortletManagerRenderer(baseContextualEditPortletManagerRenderer):
     """Render a portlet manager in edit mode for contextual portlets
     """
-
-#    implements(IPortletManagerRenderer)
+    implements(IPortletManagerRenderer)
     adapts(Interface, ISolgemaPortletsManagerLayer, IManageContextualPortletsView, IPortletManager)
-    
+
     template = ViewPageTemplateFile('solgema-edit-manager-contextual.pt')
 
     def __init__(self, context, request, view, manager):
@@ -173,7 +166,7 @@ class ContextualEditPortletManagerRenderer(baseContextualEditPortletManagerRende
             return portal_url+'/'+icon
         else:
             return None
-        
+
     def this_manager(self):
         return self.manager
 
@@ -194,13 +187,14 @@ class ContextualEditPortletManagerRenderer(baseContextualEditPortletManagerRende
         if retriever is None:
             retriever = getMultiAdapter((self.context, self.manager), ISolgemaPortletManagerRetriever)
         return retriever
-        
+
     def all_visible_portlets(self):
         """get herited portlets"""
         return self.getRenderer().portletsToShow()
-        
-    def visible_portlets_hash(self):
-        return [a['hash'] for a in self.all_visible_portlets()]
+
+    def visible_portlets_hash(self, portlet, current_url):
+        return [portlet['hash']] if current_url not in portlet['stopUrls'] and \
+                                    portlet['stopped'] is False else []
 
     def context_baseUrl(self, rportlet_key, rportlet_category):
         if rportlet_category != CONTEXT_CATEGORY:
@@ -213,26 +207,22 @@ class ContextualEditPortletManagerRenderer(baseContextualEditPortletManagerRende
         else:
             url = self.request.SERVER_URL
             return '%s%s/++%sportlets++%s' % (url, rportlet_key, rportlet_category, self.manager.__name__)
-        
+
     def all_herited_portlets(self):
         """get herited portlets"""
-        portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
-        portal = portal_state.portal()
-        manager = self.manager
         retriever = self.getRetriever()
         rportlets = retriever.getManagedPortlets()
+        current_relative_url = "/" + self.context.absolute_url(1)
         for rportlet in rportlets:
             name = rportlet['assignment'].__name__
-            portlet_context = portal.restrictedTraverse(rportlet['key'][1:len(rportlet['key'])], default=None)
             editview = queryMultiAdapter((rportlet['assignment'], self.request), name='edit', default=None)
             url = self.context_baseUrl(rportlet['key'], rportlet['category'])
             if editview is None or rportlet['category'] != CONTEXT_CATEGORY:
                 editviewName = ''
             else:
                 editviewName = '%s/%s/edit' % (url, name)
-            visibility = rportlet['hash'] in self.visible_portlets_hash() and 'portlet_visible' or 'portlet_hidden'
+            visibility = rportlet['hash'] in self.visible_portlets_hash(rportlet, current_relative_url) and 'portlet_visible' or 'portlet_hidden'
             visibility += rportlet['hash'] in self.context_portlets_hash() and ' portlet_here' or ''
-            assignments = assignment_mapping_from_key(self.context, self.manager.__name__, rportlet['category'], rportlet['key'])
             rportlet['title'] = rportlet['assignment'].title
             rportlet['visibility'] = visibility
             rportlet['editview'] = editviewName
@@ -246,4 +236,3 @@ class ContextualEditPortletManagerRenderer(baseContextualEditPortletManagerRende
             rportlet['canDelete'] = rportlet['category'] == CONTEXT_CATEGORY and True or False
             rportlet['manager_name'] = self.manager.__name__
         return rportlets
-    

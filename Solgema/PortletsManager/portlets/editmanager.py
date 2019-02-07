@@ -100,6 +100,14 @@ class ManagePortletAssignments(newManagePortletAssignments):
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
         basemanagerid = assignments.id.split('++')[-1]
+        category = CONTEXT_CATEGORY
+        content_type_portlet = False
+        content_type_key = ""
+        if "+" in basemanagerid:
+            content_type_portlet = True
+            content_type_key = basemanagerid.split('+')[1]
+            basemanagerid = basemanagerid.split('+')[0]
+            category = CONTENT_TYPE_CATEGORY
         manager = None
         if managerid:
             managerid = managerid.replace('portletmanager-','').replace('-','.')
@@ -116,18 +124,18 @@ class ManagePortletAssignments(newManagePortletAssignments):
         if not manager:
             managerid = basemanagerid
             manager = getUtility(IPortletManager, name=managerid, context=portal)
-        key = '/'.join(parent.getPhysicalPath())
-        portlethash = hashPortletInfo(dict(manager=managerid, category=CONTEXT_CATEGORY, key=key, name=name,))
+        key = '/'.join(parent.getPhysicalPath()) if not content_type_portlet else content_type_key
+        portlethash = hashPortletInfo(dict(manager=managerid, category=category, key=key, name=name,))
         listhashes = manager.listAllManagedPortlets
         retriever = getMultiAdapter((self.context, manager), ISolgemaPortletManagerRetriever)
         managedPortletsHashes = [a['hash'] for a in retriever.getManagedPortlets()]
         if portlethash in listhashes:
             listhashes.remove(portlethash)
-            listhashes.insert(position, portlethash)
+            listhashes.insert(position + 1, portlethash)
             manager.listAllManagedPortlets = listhashes
         else:
-            manager.listAllManagedPortlets = listhashes.insert(position,portlethash)
-        if position == None:
+            manager.listAllManagedPortlets = listhashes.insert(position, portlethash)
+        if position is None:
             self.request.response.redirect(self._nextUrl())
         return 'OK'
 
