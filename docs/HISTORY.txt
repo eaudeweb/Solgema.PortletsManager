@@ -3,6 +3,15 @@ Changelog
 
 9.1.dev0 - (unreleased)
 -----------------------
+* Change: check for content type portlets and do not expect that we only have
+  context portlets
+  [ichim-david refs #101950]
+* Change: Actions now have absolute urls in order to avoid mixed content load
+  by jQuery ajax when loading actions on https
+  [ichim-david refs #101950]
+* Change: move delta now adds 1 to position since in order to correctly move the
+  portlet in the new position
+  [ichim-david refs #101950]
 
 9.0 - (2016-04-12)
 ------------------
