@@ -1,6 +1,9 @@
 Changelog
 =========
 
+9.2.dev0 - (unreleased)
+-----------------------
+
 9.1 - (2018-02-11)
 ------------------
 * Change: check for content type portlets and do not expect that we only have
