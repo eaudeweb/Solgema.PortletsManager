@@ -3,6 +3,9 @@ Changelog
 
 9.2.dev0 - (unreleased)
 -----------------------
+* Change: Modified the here_url to include the full url, not just the object
+  path
+  [iulianpetchesi refs #110040]
 
 9.1 - (2018-02-11)
 ------------------

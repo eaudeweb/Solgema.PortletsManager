@@ -29,25 +29,25 @@
                        i18n:domain="Solgema.PortletsManager"
                        title="Hide here"
                        i18n:attributes="title"
-                       tal:attributes="href string:${portlet/stop_url}&portlethash=${portlet/hash}&referer=${view/url_quote_referer}&here_url=${hereurl};
+                       tal:attributes="href string:${portlet/stop_url}&portlethash=${portlet/hash}&referer=${view/url_quote_referer}&here_url=${here_url};
                                        style python:portlet.get('stopped') and 'display:none' or None">&plusmn;</a>
                     <a href="#" class="allow"
                        i18n:domain="Solgema.PortletsManager"
                        title="Show here"
                        i18n:attributes="title"
-                       tal:attributes="href string:${portlet/allow_url}&portlethash=${portlet/hash}&&referer=${view/url_quote_referer}&here_url=${hereurl};
+                       tal:attributes="href string:${portlet/allow_url}&portlethash=${portlet/hash}&&referer=${view/url_quote_referer}&here_url=${here_url};
                                        style python:not portlet.get('stopped') and 'display:none' or None">v</a>
                     <a href="#" class="left"
                        i18n:domain="Solgema.PortletsManager"
                        title="Move left"
                        i18n:attributes="title"
-                       tal:attributes="href string:${portlet/left_url}&portlethash=${portlet/hash}&&referer=${view/url_quote_referer}&here_url=${hereurl}"
+                       tal:attributes="href string:${portlet/left_url}&portlethash=${portlet/hash}&&referer=${view/url_quote_referer}&here_url=${here_url}"
                        tal:condition="python:portlet['manager_name']=='plone.rightcolumn'">&larr;</a>
                     <a href="#" class="right"
                        i18n:domain="Solgema.PortletsManager"
                        title="Move right"
                        i18n:attributes="title"
-                       tal:attributes="href string:${portlet/right_url}&portlethash=${portlet/hash}&&referer=${view/url_quote_referer}&here_url=${hereurl}"
+                       tal:attributes="href string:${portlet/right_url}&portlethash=${portlet/hash}&&referer=${view/url_quote_referer}&here_url=${here_url}"
                        tal:condition="python:portlet['manager_name']=='plone.leftcolumn'">&rarr;</a>
                     <a href="#" class="delete"
                        title="Delete"
