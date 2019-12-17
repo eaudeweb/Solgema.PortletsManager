@@ -1,6 +1,9 @@
 Changelog
 =========
 
+9.3.dev0 (unreleased)
+---------------------
+
 9.2 - (2019-12-17)
 -----------------------
 * Change: Modified the here_url to include the full url, not just the object
