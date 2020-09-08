@@ -3,6 +3,8 @@ Changelog
 
 9.3.dev0 (unreleased)
 ---------------------
+* Change: added disable of miniheader request variable to manage-contextual
+  [ichim-david refs #120363]
 
 9.2 - (2019-12-17)
 -----------------------
